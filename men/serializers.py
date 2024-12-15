@@ -7,4 +7,4 @@ class MenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Men
         fields = ('title', 'cat_id')
-        
+            
