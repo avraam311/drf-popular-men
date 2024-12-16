@@ -11,17 +11,20 @@ from .models import Men
 
 class MenAPIView(APIView):
     def get(self, request):
-        queryset = Men.objects.all().values()
-        return Response({'posts': list(queryset)})
+        m = Men.objects.all()
+        return Response({'posts': MenSerializer(m, many=True).data})
     
     def post(self, request):
+        serializer = MenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         post_new = Men.objects.create(
             title=request.data['title'],
             content=request.data['content'],
             cat_id=request.data['cat_id'],
         )
 
-        return Response({'post': model_to_dict(post_new)})
+        return Response({'post': MenSerializer(post_new).data})
 
 
 # class MenAPIView(generics.ListAPIView):
