@@ -9,45 +9,60 @@ from .serializers import MenSerializer
 from .models import Men
 
 
-class MenAPIView(APIView):
-    def get(self, request):
-        m = Men.objects.all()
-        return Response({'posts': MenSerializer(m, many=True).data})
-    
-    def post(self, request):
-        serializer = MenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+class MenAPIList(generics.ListCreateAPIView):
+    queryset = Men.objects.all()
+    serializer_class = MenSerializer
 
-        return Response({'post': serializer.data})
-    
-    def put(self, request, *args, **kwargs):
-        pk = kwargs.get('pk', None)
-        if not pk:
-            return Response({'error': 'Method PUT not allowed'})
-        
-        try:
-            instance = Men.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Object does not exist'})
-        
-        serializer = MenSerializer(data=request.data, instance=instance)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'post': serializer.data})
-    
-    def delete(self, request, *args, **kwargs):
-        pk = kwargs.get('pk', None)
-        if not pk:
-            return Response({'error': 'Method DELETE not allowed'})
 
-        try:
-            instance = Men.objects.get(pk=pk)
-            instance.delete()
-        except:
-            return Response({'error': 'Object does not exist'})
+class MenAPIUpdate(generics.UpdateAPIView):
+    queryset = Men.objects.all()
+    serializer_class = MenSerializer
+
+
+class MenAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Men.objects.all()
+    serializer_class = MenSerializer
+
+
+# class MenAPIView(APIView):
+#     def get(self, request):
+#         m = Men.objects.all()
+#         return Response({'posts': MenSerializer(m, many=True).data})
+    
+#     def post(self, request):
+#         serializer = MenSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+
+#         return Response({'post': serializer.data})
+    
+#     def put(self, request, *args, **kwargs):
+#         pk = kwargs.get('pk', None)
+#         if not pk:
+#             return Response({'error': 'Method PUT not allowed'})
+        
+#         try:
+#             instance = Men.objects.get(pk=pk)
+#         except:
+#             return Response({'error': 'Object does not exist'})
+        
+#         serializer = MenSerializer(data=request.data, instance=instance)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response({'post': serializer.data})
+    
+#     def delete(self, request, *args, **kwargs):
+#         pk = kwargs.get('pk', None)
+#         if not pk:
+#             return Response({'error': 'Method DELETE not allowed'})
+
+#         try:
+#             instance = Men.objects.get(pk=pk)
+#             instance.delete()
+#         except:
+#             return Response({'error': 'Object does not exist'})
               
-        return Response({'post': 'delete post ' + str(pk)})
+#         return Response({'post': 'delete post ' + str(pk)})
 
 
 # class MenAPIView(generics.ListAPIView):
