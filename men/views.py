@@ -16,7 +16,7 @@ from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 class MenAPIList(generics.ListCreateAPIView):
     queryset = Men.objects.all()
     serializer_class = MenSerializer
-    # permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class MenAPIUpdate(generics.RetrieveUpdateAPIView):
