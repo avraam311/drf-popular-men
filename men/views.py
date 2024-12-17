@@ -6,43 +6,26 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 
 from .serializers import MenSerializer
 from .models import Men, Category
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
 
-class MenViewSet(mixins.CreateModelMixin,
-                 mixins.RetrieveModelMixin,
-                 mixins.UpdateModelMixin,
-                 mixins.ListModelMixin,
-                 GenericViewSet):
-    # queryset = Men.objects.all()
+class MenAPIList(generics.ListCreateAPIView):
+    queryset = Men.objects.all()
     serializer_class = MenSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-
-        if not pk:
-            return Men.objects.all()[:3]
-        
-        return Men.objects.filter(pk=pk)
-
-    @action(methods=['get'], detail=True)
-    def category(self, request, pk=None):
-        cats = Category.objects.get(pk=pk)
-        return Response({'cats': cats.name})
+    # permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-# class MenAPIList(generics.ListCreateAPIView):
-#     queryset = Men.objects.all()
-#     serializer_class = MenSerializer
+class MenAPIUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Men.objects.all()
+    serializer_class = MenSerializer
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
-# class MenAPIUpdate(generics.UpdateAPIView):
-#     queryset = Men.objects.all()
-#     serializer_class = MenSerializer
-
-
-# class MenAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Men.objects.all()
-#     serializer_class = MenSerializer
+class MenAPIDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Men.objects.all()
+    serializer_class = MenSerializer
+    permission_classes = (IsAdminOrReadOnly,)
